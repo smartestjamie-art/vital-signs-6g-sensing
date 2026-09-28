@@ -86,8 +86,9 @@ while 1
         
         % 计算中心频率（只考虑正频率部分）
         abs_u_plus = abs(u_hat_plus(:,k)).^2;
-        % 使用正频率部分计算中心频率
-        omega_plus(k) = sum(freqs(1:N/2).'.*abs_u_plus(1:N/2))/sum(abs_u_plus);
+        % 使用正频率部分计算中心频率（分子分母要用同一段频率范围，
+        % 否则分母会把负频率部分的能量也算进去，导致中心频率系统性偏低）
+        omega_plus(k) = sum(freqs(1:N/2).'.*abs_u_plus(1:N/2))/sum(abs_u_plus(1:N/2));
         
         % 确保中心频率在合理范围内
         omega_plus(k) = min(max(omega_plus(k), 0), fs/2);

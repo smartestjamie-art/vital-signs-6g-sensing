@@ -9,7 +9,9 @@ function [freq_est, P_music] = MUSIC(signal, N, fs)
 %   P_music: MUSIC谱
 
 % 参数设置
-p = 1;          % 信号源数量（呼吸和心跳）
+p = 1;          % 需要返回的频率峰值个数
+p_signal = 2*p; % 信号子空间维度：输入为实数信号，每个真实频率对应一对共轭分量，
+                % 因此子空间维度要按 2*p 算，否则会把信号能量误划进噪声子空间
 M = 128;         % 协方差矩阵的阶数，M越大，估计越精确
 N_fft = N;      % FFT点数
 
@@ -29,7 +31,7 @@ R = X * X' / L;
 V = V(:, I);
 
 % 噪声子空间
-Vn = V(:, p+1:end);
+Vn = V(:, p_signal+1:end);
 
 % 计算MUSIC谱
 f = (0:N_fft-1)/N_fft * fs;
@@ -42,8 +44,8 @@ end
 % % 归一化
 % P_music = abs(P_music) / max(abs(P_music));
 
-% 寻找峰值
-[~, locs] = max(abs(P_music(1:N/2)));
-freq_est = f(locs(1:p));
+% 寻找峰值（按幅度降序取前 p 个下标，而不是只取全局最大值）
+[~, order] = sort(abs(P_music(1:N/2)), 'descend');
+freq_est = f(order(1:p));
 
 end 

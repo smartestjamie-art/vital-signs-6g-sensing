@@ -94,15 +94,16 @@ ylabel('幅度');
 % 频谱分析
 figure;
 subplot(2,1,1);
-[P_breath, f_breath] = pwelch(breath_signal, [], [], [], 1/T);
-plot(f_breath, 10*log10(P_breath));
+% 用 psd_ 前缀区分开前面已经用作目标呼吸/心跳频率参数的 f_breath / f_heart
+[P_breath, psd_f_breath] = pwelch(breath_signal, [], [], [], 1/T);
+plot(psd_f_breath, 10*log10(P_breath));
 title('呼吸信号频谱');
 xlabel('频率(Hz)');
 ylabel('功率谱密度(dB/Hz)');
 
 subplot(2,1,2);
-[P_heart, f_heart] = pwelch(heart_signal, [], [], [], 1/T);
-plot(f_heart, 10*log10(P_heart));
+[P_heart, psd_f_heart] = pwelch(heart_signal, [], [], [], 1/T);
+plot(psd_f_heart, 10*log10(P_heart));
 title('心跳信号频谱');
 xlabel('频率(Hz)');
 ylabel('功率谱密度(dB/Hz)'); 

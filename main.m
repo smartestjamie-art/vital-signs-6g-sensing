@@ -229,17 +229,17 @@ xlabel('Doppler(Hz)')
 ylabel('Amplitude')
 
 %%%%%%%%%%%%%%%%%%  Method 3: VMD  %%%%%%%%%%%%%%%%%%
-% 参数设置
-alpha = 100;     % 带宽约束参数，降低以加快收敛
-tau = 0.1;       % 时间步长，增加以加快收敛
-K = 2;           % 分解模态数，设置为2以分离呼吸和心跳
-DC = 0;          % 不包含直流分量
-init = [0.3, 1.2];  % 初始化中心频率，根据呼吸和心跳频率设置
-tol = 1e-5;      % 收敛容差，适当放宽以加快收敛
+% 参数设置（用 vmd_ 前缀区分开前面 FMCW 部分已经用过的 K / tau，避免变量名混用）
+alpha = 100;         % 带宽约束参数，降低以加快收敛
+vmd_tau = 0.1;       % 时间步长，增加以加快收敛
+vmd_K = 2;           % 分解模态数，设置为2以分离呼吸和心跳
+DC = 0;              % 不包含直流分量
+init = [0.3, 1.2];   % 初始化中心频率，根据呼吸和心跳频率设置
+tol = 1e-5;          % 收敛容差，适当放宽以加快收敛
 
 % 对带通滤波后的信号进行VMD分解
-[u_breath, omega_breath] = VMD(breath_signal, alpha, tau, K, DC, init, tol);
-[u_heart, omega_heart] = VMD(heart_signal, alpha, tau, K, DC, init, tol);
+[u_breath, omega_breath] = VMD(breath_signal, alpha, vmd_tau, vmd_K, DC, init, tol);
+[u_heart, omega_heart] = VMD(heart_signal, alpha, vmd_tau, vmd_K, DC, init, tol);
 
 % 输出频率估计结果
 fprintf('Estimation of breath rate with VMD: %.3f Hz\n', omega_breath(1));
